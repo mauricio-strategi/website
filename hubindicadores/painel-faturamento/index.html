@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Faturamento - Protótipo V2</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Header with 5 Searchable Dropdowns -->
+        <header class="header">
+            <div class="title-section">
+                <h1>Financeiro - Faturamento</h1>
+            </div>
+            <div class="filters-container">
+                <!-- Iniciativa -->
+                <div class="dropdown" id="dropdown-iniciativa">
+                    <button class="dropdown-toggle">Iniciativa: <span>Todas</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Buscar iniciativa...">
+                        </div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Todas">Todas</div>
+                            <div class="dropdown-option" data-value="Agro+RN">Agro+RN</div>
+                            <div class="dropdown-option" data-value="Conexão Empreendedora">Conexão Empreendedora</div>
+                            <div class="dropdown-option" data-value="Costura + RN">Costura + RN</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carteira -->
+                <div class="dropdown" id="dropdown-carteira">
+                    <button class="dropdown-toggle">Carteira: <span>Todas</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Buscar carteira...">
+                        </div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Todas">Todas</div>
+                            <div class="dropdown-option" data-value="Turismo">Turismo</div>
+                            <div class="dropdown-option" data-value="Bovinocultura">Bovinocultura</div>
+                            <div class="dropdown-option" data-value="Apicultura">Apicultura</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empresa -->
+                <div class="dropdown" id="dropdown-empresa">
+                    <button class="dropdown-toggle">Empresa: <span>Todas</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Buscar empresa...">
+                        </div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Todas">Todas</div>
+                            <div class="dropdown-option" data-value="Empresa A">Empresa A</div>
+                            <div class="dropdown-option" data-value="Empresa B">Empresa B</div>
+                            <div class="dropdown-option" data-value="Empresa C">Empresa C</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mês -->
+                <div class="dropdown" id="dropdown-mes">
+                    <button class="dropdown-toggle">Mês: <span>Todos</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Buscar mês...">
+                        </div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Todos">Todos</div>
+                            <div class="dropdown-option" data-value="Janeiro">Janeiro</div>
+                            <div class="dropdown-option" data-value="Fevereiro">Fevereiro</div>
+                            <div class="dropdown-option" data-value="Março">Março</div>
+                            <div class="dropdown-option" data-value="Abril">Abril</div>
+                            <div class="dropdown-option" data-value="Maio">Maio</div>
+                            <div class="dropdown-option" data-value="Junho">Junho</div>
+                            <div class="dropdown-option" data-value="Julho">Julho</div>
+                            <div class="dropdown-option" data-value="Agosto">Agosto</div>
+                            <div class="dropdown-option" data-value="Setembro">Setembro</div>
+                            <div class="dropdown-option" data-value="Outubro">Outubro</div>
+                            <div class="dropdown-option" data-value="Novembro">Novembro</div>
+                            <div class="dropdown-option" data-value="Dezembro">Dezembro</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ano -->
+                <div class="dropdown" id="dropdown-ano">
+                    <button class="dropdown-toggle">Ano: <span>Todos</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Buscar ano...">
+                        </div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Todos">Todos</div>
+                            <div class="dropdown-option" data-value="2025">2025</div>
+                            <div class="dropdown-option" data-value="2026">2026</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid">
+            <!-- Visão Geral -->
+            <div class="section-header">Visão geral</div>
+
+            <div class="card col-3">
+                <div class="card-title">Faturamento total</div>
+                <div class="stat-value">R$ 1.258.450</div>
+                <div class="stat-item">
+                    <div class="stat-subtext">Ticket Médio</div>
+                    <div class="stat-row">
+                        <span>Por Dia</span>
+                        <strong>R$ 41.948</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Por Mês</span>
+                        <strong>R$ 104.870</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card col-9">
+                <div class="card-title">Faturamento Mensal</div>
+                <div class="card-content">
+                    <canvas id="faturamentoMensalChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Indicadores Estatísticos -->
+            <div class="section-header">Indicadores Estatísticos</div>
+
+            <div class="card col-3">
+                <div class="stat-row"><span>Media</span> <strong>R$ 104.871</strong></div>
+                <div class="stat-row"><span>Mediana</span> <strong>R$ 98.400</strong></div>
+                <div class="stat-row"><span>Moda</span> <strong>R$ 85.000</strong></div>
+            </div>
+
+            <div class="card col-3">
+                <div class="stat-row"><span>Máximo</span> <strong>R$ 152.300</strong></div>
+                <div class="stat-row"><span>Mínimo</span> <strong>R$ 72.100</strong></div>
+            </div>
+
+            <div class="card col-3">
+                <div class="stat-row"><span>Desvio padrão</span> <strong>R$ 24.150</strong></div>
+                <div class="stat-row"><span>Variância</span> <strong>583.222.500</strong></div>
+            </div>
+
+            <div class="card col-3">
+                <div class="stat-row"><span>Índice de concentração</span> <strong>0.24</strong></div>
+                <div class="stat-row"><span>Amplitude</span> <strong>R$ 80.200</strong></div>
+            </div>
+
+            <!-- Distribuição do Faturamento -->
+            <div class="section-header">Distribuição do Faturamento</div>
+
+            <div class="card col-6">
+                <div class="card-title">carteiras</div>
+                <div class="card-content">
+                    <canvas id="distribuicaoChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-6">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Empresas</th>
+                            <th>Mês</th>
+                            <th>Ano</th>
+                            <th>Faturamento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Empresa 1</td>
+                            <td>Janeiro</td>
+                            <td>2026</td>
+                            <td>R$ 152.300</td>
+                        </tr>
+                        <tr>
+                            <td>Empresa 2</td>
+                            <td>Janeiro</td>
+                            <td>2026</td>
+                            <td>R$ 124.500</td>
+                        </tr>
+                        <tr>
+                            <td>Empresa 3</td>
+                            <td>Janeiro</td>
+                            <td>2026</td>
+                            <td>R$ 98.400</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Comparativos -->
+            <div class="section-header">Comparativos</div>
+
+            <div class="card col-4">
+                <div class="card-header" style="gap: 8px;">
+                    <div class="card-title">mês de referência</div>
+                    <div class="dropdown" id="dropdown-ref-mes">
+                        <button class="dropdown-toggle"
+                            style="min-width: 80px; padding: 2px 8px; font-size: 11px;"><span>Janeiro</span></button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="Janeiro">Janeiro</div>
+                                <div class="dropdown-option" data-value="Fevereiro">Fevereiro</div>
+                                <div class="dropdown-option" data-value="Março">Março</div>
+                                <div class="dropdown-option" data-value="Abril">Abril</div>
+                                <div class="dropdown-option" data-value="Maio">Maio</div>
+                                <div class="dropdown-option" data-value="Junho">Junho</div>
+                                <div class="dropdown-option" data-value="Julho">Julho</div>
+                                <div class="dropdown-option" data-value="Agosto">Agosto</div>
+                                <div class="dropdown-option" data-value="Setembro">Setembro</div>
+                                <div class="dropdown-option" data-value="Outubro">Outubro</div>
+                                <div class="dropdown-option" data-value="Novembro">Novembro</div>
+                                <div class="dropdown-option" data-value="Dezembro">Dezembro</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown" id="dropdown-ref-ano">
+                        <button class="dropdown-toggle"
+                            style="min-width: 60px; padding: 2px 8px; font-size: 11px;"><span>2026</span></button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="2025">2025</div>
+                                <div class="dropdown-option" data-value="2026">2026</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <canvas id="comparativo1Chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-4">
+                <div class="card-header" style="gap: 8px;">
+                    <div class="card-title">mês de comparação</div>
+                    <div class="dropdown" id="dropdown-comp-mes">
+                        <button class="dropdown-toggle"
+                            style="min-width: 80px; padding: 2px 8px; font-size: 11px;"><span>Dezembro</span></button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="Janeiro">Janeiro</div>
+                                <div class="dropdown-option" data-value="Fevereiro">Fevereiro</div>
+                                <div class="dropdown-option" data-value="Março">Março</div>
+                                <div class="dropdown-option" data-value="Abril">Abril</div>
+                                <div class="dropdown-option" data-value="Maio">Maio</div>
+                                <div class="dropdown-option" data-value="Junho">Junho</div>
+                                <div class="dropdown-option" data-value="Julho">Julho</div>
+                                <div class="dropdown-option" data-value="Agosto">Agosto</div>
+                                <div class="dropdown-option" data-value="Setembro">Setembro</div>
+                                <div class="dropdown-option" data-value="Outubro">Outubro</div>
+                                <div class="dropdown-option" data-value="Novembro">Novembro</div>
+                                <div class="dropdown-option" data-value="Dezembro">Dezembro</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown" id="dropdown-comp-ano">
+                        <button class="dropdown-toggle"
+                            style="min-width: 60px; padding: 2px 8px; font-size: 11px;"><span>2025</span></button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="2025">2025</div>
+                                <div class="dropdown-option" data-value="2026">2026</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <canvas id="comparativo2Chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-4"
+                style="display: flex; align-items: center; justify-content: center; text-align: center;">
+                <p style="font-size: 18px; color: var(--text-muted);">
+                    Crescimento de <br>
+                    <strong style="font-size: 24px; color: var(--text-main);">18%</strong> <br>
+                    em relação ao mês anterior.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
