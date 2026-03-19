@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monte seu Relatório - Dashboard Faturamento</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .report-layout {
+            display: flex;
+            gap: 20px;
+            padding: 24px 32px;
+            height: calc(100vh - 120px);
+            box-sizing: border-box;
+        }
+
+        .pivot-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            height: fit-content;
+        }
+
+        .pivot-main {
+            flex: 1;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            accent-color: var(--brand);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+
+<body style="background-color: var(--bg-color); margin: 0; font-family: 'Inter', sans-serif;">
+    <div class="dashboard-container" style="max-width: 100%; border-radius: 0;">
+        <!-- Header -->
+        <header class="header" style="justify-content: space-between;">
+            <div class="title-section" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1>Relatório Customizado</h1>
+                <a href="index.html" class="dropdown-toggle" style="text-decoration: none; padding: 8px 16px; background-color: var(--border-color); color: var(--text-main);">
+                    ← Voltar ao Dashboard
+                </a>
+            </div>
+        </header>
+
+        <div class="report-layout">
+            <!-- Sidebar -->
+            <aside class="pivot-sidebar">
+                <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 16px; color: var(--text-dark);">Configurar Relatório</h3>
+                
+                <div class="section-label">Dimensões</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-label"><input type="checkbox" id="col-empresa" value="Empresa" checked> Empresa</label>
+                    <label class="checkbox-label"><input type="checkbox" id="col-carteira" value="Carteira" checked> Carteira</label>
+                    <label class="checkbox-label"><input type="checkbox" id="col-municipio" value="Município" checked> Município</label>
+                    <label class="checkbox-label"><input type="checkbox" id="col-estado" value="Estado" checked> Estado</label>
+                    <label class="checkbox-label"><input type="checkbox" id="col-mes" value="Mês"> Mês</label>
+                    <label class="checkbox-label"><input type="checkbox" id="col-ano" value="Ano"> Ano</label>
+                </div>
+
+                <div class="section-label">Métricas</div>
+                <div class="checkbox-group">
+                    <label class="checkbox-label"><input type="checkbox" id="col-faturamento" value="Faturamento" checked> Faturamento Mensal</label>
+                    <label class="checkbox-label"><input type="checkbox" id="col-ticket" value="Ticket Médio"> Ticket Médio Diário</label>
+                    <label class="checkbox-label"><input type="checkbox" id="col-crescimento" value="Crescimento"> Crescimento (%)</label>
+                </div>
+            </aside>
+
+            <!-- Main Table Area -->
+            <main class="pivot-main">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0; font-size: 16px; color: var(--text-dark);">Tabela de Resultados</h3>
+                    <button id="btn-exportar" class="dropdown-toggle" style="background-color: var(--brand); color: white; border: none; padding: 8px 16px;">Exportar CSV</button>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table" id="pivotTable">
+                        <thead>
+                            <tr id="pivot-head">
+                                <!-- Headers dynamically generated -->
+                            </tr>
+                        </thead>
+                        <tbody id="pivot-body">
+                            <!-- Rows dynamically generated -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="relatorio.js"></script>
+</body>
+</html>

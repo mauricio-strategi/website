@@ -5,9 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdowns.forEach(dropdown => {
         const toggle = dropdown.querySelector('.dropdown-toggle');
         const menu = dropdown.querySelector('.dropdown-menu');
+        if (!menu) return; // Skip simple input dropdowns
         const searchInput = dropdown.querySelector('.dropdown-search input');
         const options = dropdown.querySelectorAll('.dropdown-option');
         const span = toggle.querySelector('span');
+
 
         // Toggle menu
         toggle.addEventListener('click', (e) => {
@@ -175,6 +177,59 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Realistic weekly comparison data
-    createSmallChart('comparativo1Chart', [25000, 28000, 32000, 41000], 'Janeiro');
-    createSmallChart('comparativo2Chart', [22000, 24000, 28000, 35000], 'Dezembro');
+    createSmallChart('comparativo1Chart', [25000, 28000, 32000, 41000], 'Ref');
+    createSmallChart('comparativo2Chart', [22000, 24000, 28000, 35000], 'Comp');
+
+
+    // Município Comparison Data
+    createSmallChart('comparativoMun1Chart', [22000, 25000, 27500, 31000], 'Ref (Mun)');
+    createSmallChart('comparativoMun2Chart', [24000, 26000, 29000, 34720], 'Comp (Mun)');
+
+    // RN Bubble Map (Distribuição Geográfica)
+    if (document.getElementById('rnMap')) {
+        // Initialize map centered on Rio Grande do Norte
+        const map = L.map('rnMap', { zoomControl: false }).setView([-5.8, -36.5], 7);
+
+        // Add CartoDB Positron tiles for a clean, Metabase-like look
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 10,
+            minZoom: 6
+        }).addTo(map);
+
+        // Add mock city data as bubbles
+        const cities = [
+            { name: "Natal", lat: -5.79448, lng: -35.21100, count: 120 },
+            { name: "Mossoró", lat: -5.18787, lng: -37.34407, count: 55 },
+            { name: "Parnamirim", lat: -5.91899, lng: -35.26359, count: 40 },
+            { name: "Caicó", lat: -6.45849, lng: -37.09456, count: 20 },
+            { name: "Macau", lat: -5.11581, lng: -36.63471, count: 12 }
+        ];
+
+        // Bubble settings
+        const minRadius = 5;
+        const maxRadius = 30;
+        const maxCount = Math.max(...cities.map(c => c.count));
+
+        cities.forEach(city => {
+            // Calculate relative size for the bubble
+            const radius = Math.max(minRadius, (city.count / maxCount) * maxRadius);
+            
+            L.circleMarker([city.lat, city.lng], {
+                radius: radius,
+                fillColor: darkBlue,
+                color: "#ffffff",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.7
+            })
+            .bindTooltip(`<strong>${city.name}</strong><br/>${city.count} empresas`, {
+                permanent: false,
+                direction: 'top'
+            })
+            .addTo(map);
+        });
+    }
+
 });

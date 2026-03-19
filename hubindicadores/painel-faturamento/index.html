@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Faturamento - Protótipo V2</title>
+    <title>Dashboard Faturamento - Protótipo V4</title>
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,12 +18,19 @@
 
 <body>
     <div class="dashboard-container">
-        <!-- Header with 5 Searchable Dropdowns -->
-        <header class="header">
-            <div class="title-section">
-                <h1>Financeiro - Faturamento</h1>
+        <!-- Header with Searchable Dropdowns and Inputs -->
+        <header style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div class="title-section">
+                    <h1>Financeiro - Faturamento</h1>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <a href="relatorio.html" style="text-decoration: none; background-color: var(--primary-color); color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; transition: 0.2s; white-space: nowrap;">
+                        Monte seu Relatório
+                    </a>
+                </div>
             </div>
-            <div class="filters-container">
+            <div class="filters-container" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-start; align-items: center;">
                 <!-- Iniciativa -->
                 <div class="dropdown" id="dropdown-iniciativa">
                     <button class="dropdown-toggle">Iniciativa: <span>Todas</span></button>
@@ -66,6 +79,23 @@
                     </div>
                 </div>
 
+                <!-- Município -->
+                <div class="dropdown" id="dropdown-municipio">
+                    <button class="dropdown-toggle">Município: <span>Todos</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search">
+                            <input type="text" placeholder="Buscar município...">
+                        </div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Todos">Todos</div>
+                            <div class="dropdown-option" data-value="Natal">Natal</div>
+                            <div class="dropdown-option" data-value="Mossoró">Mossoró</div>
+                            <div class="dropdown-option" data-value="Parnamirim">Parnamirim</div>
+                            <div class="dropdown-option" data-value="Caicó">Caicó</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Mês -->
                 <div class="dropdown" id="dropdown-mes">
                     <button class="dropdown-toggle">Mês: <span>Todos</span></button>
@@ -105,65 +135,60 @@
                         </div>
                     </div>
                 </div>
+
+
+
             </div>
         </header>
 
         <div class="grid">
-            <!-- Visão Geral -->
-            <div class="section-header">Visão geral</div>
+            <!-- 1. Visão Geral -->
+            <div class="section-header">Visão Geral</div>
 
-            <div class="card col-3">
-                <div class="card-title">Faturamento total</div>
+            <div class="card col-4">
+                <div class="card-title">Faturamento Total</div>
                 <div class="stat-value">R$ 1.258.450</div>
-                <div class="stat-item">
-                    <div class="stat-subtext">Ticket Médio</div>
-                    <div class="stat-row">
-                        <span>Por Dia</span>
-                        <strong>R$ 41.948</strong>
-                    </div>
-                    <div class="stat-row">
-                        <span>Por Mês</span>
-                        <strong>R$ 104.870</strong>
-                    </div>
-                </div>
             </div>
 
-            <div class="card col-9">
-                <div class="card-title">Faturamento Mensal</div>
-                <div class="card-content">
+            <div class="card col-4">
+                <div class="card-title">Faturamento Médio</div>
+                <div class="stat-value">R$ 104.870</div>
+            </div>
+
+            <div class="card col-4">
+                <div class="card-title">Faturamento Acumulado</div>
+                <div class="stat-value">R$ 2.450.000</div>
+            </div>
+
+            <!-- Performance Mensal -->
+            <div class="section-header">Performance Mensal</div>
+
+            <div class="card col-12">
+                <div class="card-content" style="height: 320px;">
                     <canvas id="faturamentoMensalChart"></canvas>
                 </div>
             </div>
 
-            <!-- Indicadores Estatísticos -->
-            <div class="section-header">Indicadores Estatísticos</div>
+            <!-- 2. Faturamento por Carteira -->
+            <div class="section-header">Faturamento por Carteira</div>
 
-            <div class="card col-3">
-                <div class="stat-row"><span>Media</span> <strong>R$ 104.871</strong></div>
-                <div class="stat-row"><span>Mediana</span> <strong>R$ 98.400</strong></div>
-                <div class="stat-row"><span>Moda</span> <strong>R$ 85.000</strong></div>
+            <div class="col-12" style="display: flex; justify-content: flex-start; margin-bottom: 20px;">
+                <div class="dropdown" id="dropdown-carteira">
+                    <button class="dropdown-toggle" style="min-width: 150px;">Carteira: <span>Todas</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Todas">Todas</div>
+                            <div class="dropdown-option" data-value="Turismo">Turismo</div>
+                            <div class="dropdown-option" data-value="Bovinocultura">Bovinocultura</div>
+                            <div class="dropdown-option" data-value="Apicultura">Apicultura</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="card col-3">
-                <div class="stat-row"><span>Máximo</span> <strong>R$ 152.300</strong></div>
-                <div class="stat-row"><span>Mínimo</span> <strong>R$ 72.100</strong></div>
-            </div>
-
-            <div class="card col-3">
-                <div class="stat-row"><span>Desvio padrão</span> <strong>R$ 24.150</strong></div>
-                <div class="stat-row"><span>Variância</span> <strong>583.222.500</strong></div>
-            </div>
-
-            <div class="card col-3">
-                <div class="stat-row"><span>Índice de concentração</span> <strong>0.24</strong></div>
-                <div class="stat-row"><span>Amplitude</span> <strong>R$ 80.200</strong></div>
-            </div>
-
-            <!-- Distribuição do Faturamento -->
-            <div class="section-header">Distribuição do Faturamento</div>
 
             <div class="card col-6">
-                <div class="card-title">carteiras</div>
+                <div class="card-title">Carteiras</div>
                 <div class="card-content">
                     <canvas id="distribuicaoChart"></canvas>
                 </div>
@@ -173,47 +198,76 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Empresas</th>
+                            <th>Carteira</th>
                             <th>Mês</th>
                             <th>Ano</th>
                             <th>Faturamento</th>
+                            <th>% Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Empresa 1</td>
+                            <td>Agro+RN</td>
                             <td>Janeiro</td>
                             <td>2026</td>
                             <td>R$ 152.300</td>
+                            <td>40,5%</td>
                         </tr>
                         <tr>
-                            <td>Empresa 2</td>
+                            <td>Turismo</td>
                             <td>Janeiro</td>
                             <td>2026</td>
                             <td>R$ 124.500</td>
+                            <td>33,2%</td>
                         </tr>
                         <tr>
-                            <td>Empresa 3</td>
+                            <td>Bovinocultura</td>
                             <td>Janeiro</td>
                             <td>2026</td>
                             <td>R$ 98.400</td>
+                            <td>26,3%</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <!-- Comparativos -->
+            <!-- Mapa RN -->
+            <div class="section-header">Distribuição da Carteira</div>
+            <div class="card col-12">
+                <div class="card-title">Quantidade de Empresas por Município</div>
+                <div class="card-content" style="height: 400px; padding: 0;">
+                    <div id="rnMap" style="width: 100%; height: 100%; border-radius: 6px;"></div>
+                </div>
+            </div>
+
+            <!-- 3. Comparativos -->
             <div class="section-header">Comparativos</div>
+
+            <div class="col-12" style="display: flex; justify-content: flex-start; margin-bottom: 20px;">
+                <div class="dropdown" id="dropdown-comparativos-empresa">
+                    <button class="dropdown-toggle" style="min-width: 150px;">Empresa: <span>Agro+RN</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Agro+RN">Agro+RN</div>
+                            <div class="dropdown-option" data-value="Empresa A">Empresa A</div>
+                            <div class="dropdown-option" data-value="Empresa B">Empresa B</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="card col-4">
                 <div class="card-header" style="gap: 8px;">
-                    <div class="card-title">mês de referência</div>
+                    <div class="card-title">período / ano ref.</div>
                     <div class="dropdown" id="dropdown-ref-mes">
                         <button class="dropdown-toggle"
                             style="min-width: 80px; padding: 2px 8px; font-size: 11px;"><span>Janeiro</span></button>
                         <div class="dropdown-menu">
                             <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
                             <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1º Semestre">1º Semestre</div>
+                                <div class="dropdown-option" data-value="2º Semestre">2º Semestre</div>
                                 <div class="dropdown-option" data-value="Janeiro">Janeiro</div>
                                 <div class="dropdown-option" data-value="Fevereiro">Fevereiro</div>
                                 <div class="dropdown-option" data-value="Março">Março</div>
@@ -248,13 +302,15 @@
 
             <div class="card col-4">
                 <div class="card-header" style="gap: 8px;">
-                    <div class="card-title">mês de comparação</div>
+                    <div class="card-title">período / ano comp.</div>
                     <div class="dropdown" id="dropdown-comp-mes">
                         <button class="dropdown-toggle"
                             style="min-width: 80px; padding: 2px 8px; font-size: 11px;"><span>Dezembro</span></button>
                         <div class="dropdown-menu">
                             <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
                             <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1º Semestre">1º Semestre</div>
+                                <div class="dropdown-option" data-value="2º Semestre">2º Semestre</div>
                                 <div class="dropdown-option" data-value="Janeiro">Janeiro</div>
                                 <div class="dropdown-option" data-value="Fevereiro">Fevereiro</div>
                                 <div class="dropdown-option" data-value="Março">Março</div>
@@ -292,9 +348,220 @@
                 <p style="font-size: 18px; color: var(--text-muted);">
                     Crescimento de <br>
                     <strong style="font-size: 24px; color: var(--text-main);">18%</strong> <br>
-                    em relação ao mês anterior.
+                    em relação ao período anterior.
                 </p>
             </div>
+
+            <!-- Relational Comparisons (V6) -->
+            <div class="card col-12">
+                <div class="card-title">Comparativo Relacional (Empresa x Carteira x Município x Estado)</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Indicador</th>
+                            <th>Empresa</th>
+                            <th>Média Carteira</th>
+                            <th>Média Município</th>
+                            <th>Média Estado (RN)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Faturamento Mensal</td>
+                            <td><strong>R$ 152.300</strong></td>
+                            <td>R$ 124.500</td>
+                            <td>R$ 110.000</td>
+                            <td>R$ 95.000</td>
+                        </tr>
+                        <tr>
+                            <td>Ticket Médio Diário</td>
+                            <td><strong>R$ 41.948</strong></td>
+                            <td>R$ 38.500</td>
+                            <td>R$ 35.200</td>
+                            <td>R$ 32.100</td>
+                        </tr>
+                        <tr>
+                            <td>Crescimento</td>
+                            <td><strong style="color: #2e7d32;">+18%</strong></td>
+                            <td>+12%</td>
+                            <td>+8%</td>
+                            <td>+5%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+            <!-- Comparativos por Município -->
+            <div class="col-12"
+                style="display: flex; justify-content: flex-start; margin-bottom: 20px; margin-top: 20px;">
+                <div class="dropdown" id="dropdown-comparativos-municipio">
+                    <button class="dropdown-toggle" style="min-width: 150px;">Município: <span>Natal</span></button>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                        <div class="dropdown-options">
+                            <div class="dropdown-option" data-value="Natal">Natal</div>
+                            <div class="dropdown-option" data-value="Parnamirim">Parnamirim</div>
+                            <div class="dropdown-option" data-value="Mossoró">Mossoró</div>
+                            <div class="dropdown-option" data-value="Caicó">Caicó</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card col-4">
+                <div class="card-header" style="gap: 8px;">
+                    <div class="card-title">período / ano ref. (Mun)</div>
+                    <div class="dropdown" id="dropdown-ref-mes-mun">
+                        <button class="dropdown-toggle"
+                            style="min-width: 80px; padding: 2px 8px; font-size: 11px;"><span>Janeiro</span></button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1º Semestre">1º Semestre</div>
+                                <div class="dropdown-option" data-value="2º Semestre">2º Semestre</div>
+                                <div class="dropdown-option" data-value="Janeiro">Janeiro</div>
+                                <div class="dropdown-option" data-value="Fevereiro">Fevereiro</div>
+                                <div class="dropdown-option" data-value="Março">Março</div>
+                                <div class="dropdown-option" data-value="Abril">Abril</div>
+                                <div class="dropdown-option" data-value="Maio">Maio</div>
+                                <div class="dropdown-option" data-value="Junho">Junho</div>
+                                <div class="dropdown-option" data-value="Julho">Julho</div>
+                                <div class="dropdown-option" data-value="Agosto">Agosto</div>
+                                <div class="dropdown-option" data-value="Setembro">Setembro</div>
+                                <div class="dropdown-option" data-value="Outubro">Outubro</div>
+                                <div class="dropdown-option" data-value="Novembro">Novembro</div>
+                                <div class="dropdown-option" data-value="Dezembro">Dezembro</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown" id="dropdown-ref-ano-mun">
+                        <button class="dropdown-toggle"
+                            style="min-width: 60px; padding: 2px 8px; font-size: 11px;"><span>2026</span></button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="2025">2025</div>
+                                <div class="dropdown-option" data-value="2026">2026</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <canvas id="comparativoMun1Chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-4">
+                <div class="card-header" style="gap: 8px;">
+                    <div class="card-title">período / ano comp. (Mun)</div>
+                    <div class="dropdown" id="dropdown-comp-mes-mun">
+                        <button class="dropdown-toggle"
+                            style="min-width: 80px; padding: 2px 8px; font-size: 11px;"><span>Dezembro</span></button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="1º Semestre">1º Semestre</div>
+                                <div class="dropdown-option" data-value="2º Semestre">2º Semestre</div>
+                                <div class="dropdown-option" data-value="Janeiro">Janeiro</div>
+                                <div class="dropdown-option" data-value="Fevereiro">Fevereiro</div>
+                                <div class="dropdown-option" data-value="Março">Março</div>
+                                <div class="dropdown-option" data-value="Abril">Abril</div>
+                                <div class="dropdown-option" data-value="Maio">Maio</div>
+                                <div class="dropdown-option" data-value="Junho">Junho</div>
+                                <div class="dropdown-option" data-value="Julho">Julho</div>
+                                <div class="dropdown-option" data-value="Agosto">Agosto</div>
+                                <div class="dropdown-option" data-value="Setembro">Setembro</div>
+                                <div class="dropdown-option" data-value="Outubro">Outubro</div>
+                                <div class="dropdown-option" data-value="Novembro">Novembro</div>
+                                <div class="dropdown-option" data-value="Dezembro">Dezembro</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown" id="dropdown-comp-ano-mun">
+                        <button class="dropdown-toggle"
+                            style="min-width: 60px; padding: 2px 8px; font-size: 11px;"><span>2025</span></button>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-search"><input type="text" placeholder="Buscar..."></div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-value="2025">2025</div>
+                                <div class="dropdown-option" data-value="2026">2026</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <canvas id="comparativoMun2Chart"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-4"
+                style="display: flex; align-items: center; justify-content: center; text-align: center;">
+                <p style="font-size: 18px; color: var(--text-muted);">
+                    Crescimento do Município <br>
+                    <strong style="font-size: 24px; color: var(--text-main);">12%</strong> <br>
+                    em relação ao período anterior.
+                </p>
+            </div>
+            <!-- Relational Comparisons Município -->
+            <div class="card col-12">
+                <div class="card-title">Comparativo Relacional (Município x Carteira x Estado)</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Indicador</th>
+                            <th>Média Município</th>
+                            <th>Média Carteira</th>
+                            <th>Média Estado (RN)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Faturamento Mensal</td>
+                            <td><strong>R$ 110.000</strong></td>
+                            <td>R$ 124.500</td>
+                            <td>R$ 95.000</td>
+                        </tr>
+                        <tr>
+                            <td>Ticket Médio Diário</td>
+                            <td><strong>R$ 35.200</strong></td>
+                            <td>R$ 38.500</td>
+                            <td>R$ 32.100</td>
+                        </tr>
+                        <tr>
+                            <td>Crescimento</td>
+                            <td><strong style="color: #2e7d32;">+8%</strong></td>
+                            <td>+12%</td>
+                            <td>+5%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- 4. Indicadores Estatísticos -->
+            <div class="section-header">Indicadores Estatísticos</div>
+
+            <div class="card col-3">
+                <div class="stat-row"><span>Media</span> <strong>R$ 104.871</strong></div>
+                <div class="stat-row"><span>Mediana</span> <strong>R$ 98.400</strong></div>
+                <div class="stat-row"><span>Moda</span> <strong>R$ 85.000</strong></div>
+            </div>
+
+            <div class="card col-3">
+                <div class="stat-row"><span>Máximo</span> <strong>R$ 152.300</strong></div>
+                <div class="stat-row"><span>Mínimo</span> <strong>R$ 72.100</strong></div>
+            </div>
+
+            <div class="card col-3">
+                <div class="stat-row"><span>Desvio padrão</span> <strong>R$ 24.150</strong></div>
+                <div class="stat-row"><span>Variância</span> <strong>583.222.500</strong></div>
+            </div>
+
+            <div class="card col-3">
+                <div class="stat-row"><span>Índice de concentração</span> <strong>0.24</strong></div>
+                <div class="stat-row"><span>Amplitude</span> <strong>R$ 80.200</strong></div>
+            </div>
+
         </div>
     </div>
 
